@@ -18,7 +18,7 @@ class chatServer
     
     chatServer() throws Exception
     {
-        ServerSocket soc=new ServerSocket(5217);
+        ServerSocket soc=new ServerSocket(5217); 
         users=new ArrayList<Server.UserEntity>();
 
         while(true)
