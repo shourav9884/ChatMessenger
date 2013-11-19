@@ -7,6 +7,7 @@ package Server;
 import java.net.*;
 import java.util.*;
 import java.io.*;
+import java.security.Timestamp;
 import java.sql.ResultSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -207,6 +208,11 @@ class AcceptClient extends Thread
                     else if(msgJson.getString("action").equals("logout"))
                     {
                         logOut(msgJson.getString("name"));
+                        break;
+                    }
+                    else if(msgJson.getString("action").equals("file_transfer"))
+                    {
+                        saveFile(msgJson.getString("to"),msgJson.getString("file_content"),msgJson.getString("sender"));
                         break;
                     }
 //                    String msgFromClient=new String();
@@ -471,19 +477,7 @@ class AcceptClient extends Thread
                 {
                     for(int j=0;j<users.get(i).getFriends().size();j++)
                     {
-                        for(int k=0;k<users.size();k++)
-                        {
-                            if(users.get(k).getId()==users.get(i).getFriends().get(j))
-                            {
-                                DataOutputStream tdout = null;
-                                try {
-                                    tdout = new DataOutputStream(users.get(k).getOwnSocket().getOutputStream());
-                                    tdout.writeUTF("{\"response_type\":\"send_message\",\"response\":\""+msg+"\",\"name\":\""+senderName+"\"}");
-                                } catch (IOException ex) {
-                                    Logger.getLogger(chatServer.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                            }
-                        }
+                        this.sendMessage(sender, dbHandler.getUserName(users.get(i).getFriends().get(j)), msg, senderName);
                         
                     }
                 }
@@ -508,6 +502,7 @@ class AcceptClient extends Thread
 
             }
         }
+        
         else
         {
             int i=0;
@@ -676,9 +671,54 @@ class AcceptClient extends Thread
                 }
         }
     }
-    private void sendOfflineMessage()
+    private void saveFile(String reciever,String file_content,String sender)
     {
         //
+        
+        Date date=new Date();
+        String d=date.toString();
+        d=d.replace(" ", "");
+        d=d.replace(":", "");
+        d=d.replace(".", "");
+        String path="uploads/"+reciever+"_"+sender+"_"+d+".txt";
+        
+        File file=new File(path);
+        FileOutputStream fis=null;
+        if(!file.exists())
+        {
+                try {
+                    fis=new FileOutputStream(file);
+                    for(int i=0;i<file_content.length();i++)
+                    {
+                        fis.write(file_content.charAt(i));
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(chatServer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                int fid=0,uid=0;
+                
+                for(int i=0;i<users.size();i++)
+                {
+                    if(users.get(i).getName().equals(sender))
+                    {
+                        uid=users.get(i).getId();
+                        DataOutputStream tdout = null;
+//                        tdout = new DataOutputStream(users.get(i).getOwnSocket().getOutputStream());
+//                        tdout.writeUTF("{\"response_type\":\"send_message\",\"response\":\""+msg+"\",\"name\":\""+senderName+"\"}");
+                        break;
+                    }
+                }
+                for(int i=0;i<users.size();i++)
+                {
+                    if(users.get(i).getName().equals(reciever))
+                    {
+                        fid=users.get(i).getId();
+                        break;
+                    }
+                }
+                
+            
+        }
     }
     
 }

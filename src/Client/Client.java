@@ -7,6 +7,7 @@ import java.util.List;
 import java.awt.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -98,6 +99,17 @@ class Client extends Frame implements Runnable
                 String to=tok.nextToken();
                 dataToSend="{\"action\":\"request\",\"sender\":\""+sender+"\",\"to\":\""+to+"\"}";
             }
+            else if(first.equals("FILE"))
+            {
+                message="";
+                while(tok.hasMoreElements())
+                {
+                    message+=tok.nextElement();
+                    message+=" ";
+                }
+                dataToSend="{\"action\":\"file_transfer\",\"sender\":\""+sender+"\",\"to\":\""+recievers+"\",\"file_content\":\""+message+"\"}";
+                System.out.println(dataToSend);
+            }
             else if(first.equals("Accept"))
             {
                 String to=tok.nextToken();
@@ -154,6 +166,7 @@ class Client extends Frame implements Runnable
     public static void main(String args[]) throws Exception
     {
         Client Client1=new Client("","");
+        Client1.window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         Client1.window.show();
         Client1.t.start();
     }   
