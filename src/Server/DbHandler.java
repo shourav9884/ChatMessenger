@@ -27,7 +27,7 @@ public class DbHandler {
         try {
             database.connect();
             ResultSet result;
-            result=database.select("user_info", "*", "uname = '"+user+"' AND password='"+pass+"'");
+            result=database.select("user_info", "*", "uname = '"+user+"' AND password='"+pass+"'",null);
             if(database.getRowCount(result)==1)
             {
                 userObj=new UserEntity();
@@ -50,7 +50,7 @@ public class DbHandler {
         try {
             database.connect();
             ResultSet resultSet;
-            resultSet=database.select("friends", "friend_id", "user_id = "+id);
+            resultSet=database.select("friends", "friend_id", "user_id = "+id,null);
             if(database.getRowCount(resultSet)>0)
             {
                 result=new ArrayList<Integer>();
@@ -73,7 +73,7 @@ public class DbHandler {
         try {
             
             database.connect();
-            ResultSet result=database.select("off_message", "*", "to_id="+id);
+            ResultSet result=database.select("off_message", "*", "to_id="+id,"time DESC");
             while(result.next())
             {
                 try {
@@ -119,7 +119,7 @@ public class DbHandler {
         try {
             database.connect();
             ResultSet result;
-            result=database.select("request", "*", "user_id = "+uid+" AND fr_id="+fid+"");
+            result=database.select("request", "*", "user_id = "+uid+" AND fr_id="+fid+"",null);
             if(database.getRowCount(result)>0)
             {
                 database.close();
@@ -145,7 +145,7 @@ public class DbHandler {
         try {
             database.connect();
             ResultSet resultSet;
-            resultSet=database.select("user_info", "uname", "user_id="+id);
+            resultSet=database.select("user_info", "uname", "user_id="+id,null);
             if(database.getRowCount(resultSet)>0)
             {
                 try {
@@ -168,7 +168,7 @@ public class DbHandler {
         try {
             database.connect();
             ResultSet resultSet;
-            resultSet=database.select("user_info", "user_id", "uname='"+name+"'");
+            resultSet=database.select("user_info", "user_id", "uname='"+name+"'",null);
             if(database.getRowCount(resultSet)>0)
             {
                 try {

@@ -75,7 +75,7 @@ public class Database {
         }
         return false;
     }
-    public ResultSet select(String tableName,String columns,String where)
+    public ResultSet select(String tableName,String columns,String where,String orderBy)
     {
         if(connect!=null)
         {
@@ -86,6 +86,10 @@ public class Database {
                 if(where!=null)
                 {
                     query+=" where "+where;
+                }
+                if(orderBy!=null)
+                {
+                    query+=" ORDER BY "+orderBy;
                 }
                 System.out.println(query);
                 resultSet=statement.executeQuery(query);
