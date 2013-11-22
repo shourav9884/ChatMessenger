@@ -40,36 +40,6 @@ class Client extends Frame implements Runnable
 
     }
    
-//    public boolean action(Event e,Object o)
-//    {
-//        if(e.arg.equals("Send"))
-//        {
-//            try
-//            {
-//                dout.writeUTF(sendTo + " "  + "DATA" + " " + tf.getText().toString());            
-//                ta.append("\n" + LoginName + " Says:" + tf.getText().toString());    
-//                tf.setText("");
-//            }
-//            catch(Exception ex)
-//            {
-//            }    
-//        }
-//        else if(e.arg.equals("Close"))
-//        {
-//            try
-//            {
-//                dout.writeUTF(LoginName + " LOGOUT");
-//                System.exit(1);
-//            }
-//            catch(Exception ex)
-//            {
-//            }
-//            
-//        }
-//        
-//        return super.action(e,o);
-//    }
-//    public void 
     public static void sendLogin(String user,String pass) 
     {
         try {

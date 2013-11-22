@@ -51,106 +51,7 @@ class AcceptClient extends Thread
         dbHandler=new DbHandler();
         String LoginName=din.readUTF();
         loggedIn=0;
-        JSONObject jsonObj=new JSONObject(LoginName);
-        System.out.println(jsonObj.getString("action"));
-        if(jsonObj.getString("action").equals("login"))
-        {
-            
-            
-            
-            JSONObject loginInfo=jsonObj.getJSONObject("data");
-            String user=loginInfo.getString("user");
-            String pass=loginInfo.getString("pass");
-            UserEntity userObj=dbHandler.checkLogin(user, pass);
-            System.out.println(ClientSocket.toString());
-            if(userObj!=null)
-            {
-                String jsonDatatoOthers="{\"response_type\":\"login\",\"response\":\"new\",\"name\":\""+userObj.getName()+"\"}";
-                String jsonRes="{\"response_type\":\"login\",\"response\":\"success\"";
-                System.out.println(users.size()+" users Online");
-                if(users.size()>0)
-                {
-                    jsonRes+=",\"available\":[";
-                    for(int i=0;i<users.size();i++)
-                    {
-                        if(users.get(i).getId()!=userObj.getId())
-                        {
-                            jsonRes+="\"";
-                            jsonRes+=users.get(i).getName();
-
-                            jsonRes+="\"";
-                            if(i!=users.size()-1)
-                            {
-                                jsonRes+=",";
-                            }
-
-                            DataOutputStream tdout=new DataOutputStream(users.get(i).getOwnSocket().getOutputStream());
-                            tdout.writeUTF(jsonDatatoOthers);
-                        }
-                    }
-                    jsonRes+="]";
-                }
-                if(userObj.getFriends().size()>0)
-                {
-                    jsonRes+=",\"friends\":[";
-                    for(int i=0;i<userObj.getFriends().size();i++)
-                    {
-                        jsonRes+="\"";
-                        jsonRes+=dbHandler.getUserName(userObj.getFriends().get(i));
-                        jsonRes+="\"";
-                        if(i!=userObj.getFriends().size()-1)
-                        {
-                            jsonRes+=",";
-                        }
-                    }
-                    jsonRes+="]";
-                }
-                if(dbHandler.getOfflineMessages(userObj.getId()).size()>0)
-                {
-                    ArrayList<String> msgs=dbHandler.getOfflineMessages(userObj.getId());
-                    jsonRes+=",\"messages\":[";
-                    for(int i=0;i<msgs.size();i++)
-                    {
-                        jsonRes+="\"";
-                        jsonRes+=msgs.get(i);
-                        jsonRes+="\"";
-                        if(i!=msgs.size()-1)
-                        {
-                            System.out.println(i+",");
-                            jsonRes+=",";
-                        }
-                    }
-                    jsonRes+="]";
-                    dbHandler.deleteOfflineMessage(userObj.getId());
-                }
-
-                jsonRes+=",\"name\":\""+userObj.getName()+"\"}";
-                System.out.println("User Logged In :" + user);
-
-                userObj.setOwnSocket(ClientSocket);
-                
-
-                users.add(userObj);
-
-                this.loggedIn=1;
-                DataOutputStream tdout=new DataOutputStream(ClientSocket.getOutputStream());
-                tdout.writeUTF(jsonRes);  
-
-                            
-
-
-
-            }
-            else
-            {
-                System.out.println(ClientSocket.toString());
-                String jsonResponse="{\"response_type\":\"login\",\"response\":\"failed\"}";
-                DataOutputStream tdout=new DataOutputStream(ClientSocket.getOutputStream());
-                tdout.writeUTF(jsonResponse); 
-                System.out.println("login failed");
-            }
-            start();
-        }
+        start();
         
         
         
@@ -215,57 +116,7 @@ class AcceptClient extends Thread
                         saveFile(msgJson.getString("to"),msgJson.getString("file_content"),msgJson.getString("sender"));
                         break;
                     }
-//                    String msgFromClient=new String();
-//                    msgFromClient=din.readUTF();
-//                    StringTokenizer st=new StringTokenizer(msgFromClient);
-//                    String Sendto=st.nextToken();                
-//                    String MsgType=st.nextToken();
-//                    int iCount=0;
 
-//                    if(MsgType.equals("LOGOUT"))
-//                    {
-//                        for(iCount=0;iCount<users.size();iCount++)
-//                        {
-//                            if(users.get(iCount).getName().equals(Sendto))
-//                            {
-//                                users.remove(iCount);
-//                                
-//                                System.out.println("User " + Sendto +" Logged Out ...");
-//                                break;
-//                            }
-//                        }
-//
-//                    }
-//                    else
-//                    {
-//                        String msg="";
-//                        while(st.hasMoreTokens())
-//                        {
-//                            msg=msg+" " +st.nextToken();
-//                        }
-//                        for(iCount=0;iCount<users.size();iCount++)
-//                        {
-//                            if(users.get(iCount).getName().equals(Sendto))
-//                            {    
-//                                Socket tSoc=(Socket)users.get(iCount).getOwnSocket();                            
-//                                DataOutputStream tdout=new DataOutputStream(tSoc.getOutputStream());
-//                                tdout.writeUTF(msg);                            
-//                                break;
-//                            }
-//                        }
-//                        if(iCount==users.size())
-//                        {
-//                            dout.writeUTF("I am offline");
-//                        }
-//                        else
-//                        {
-//
-//                        }
-//                    }
-//                    if(MsgType.equals("LOGOUT"))
-//                    {
-//                        break;
-//                    }
                 }
                 else if(this.loggedIn==0)
                 {
@@ -613,7 +464,7 @@ class AcceptClient extends Thread
                             Logger.getLogger(chatServer.class.getName()).log(Level.SEVERE, null, ex);
                         }
                          try {
-                        String jsonRes="{\"response_type\":\"new_friend\",\"response\":\""+user.getName()+"\"}";
+                        String jsonRes="{\"response_type\":\"new_friend\",\"response\":\""+fr.getName()+"\"}";
                         DataOutputStream tdout=null;
                         tdout = new DataOutputStream(user.getOwnSocket().getOutputStream());
                         tdout.writeUTF(jsonRes);
